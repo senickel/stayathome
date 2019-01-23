@@ -2,7 +2,9 @@ library(tidyverse)
 library(readstata13)
 library(survey)
 options(stringsAsFactors = FALSE)
+
 dat <- read.dta13("ZA5900_v4-0-0.dta",convert.factors = FALSE)
+
 d1 <- svydesign(ids=~1,data=dat,weights=dat$WEIGHT)
 
 
@@ -27,10 +29,11 @@ df3 <- data.frame(country = c("Austria","Denmark","Germany","Sweden","United Kin
 
 df4 <- left_join(df3,df2,by=c("code" = "V4")) %>% 
   filter(V12==3) 
-ct <- cor.test(df4$predicted,df4$Prob)
-ct$estimate
+
+ct <- cor.test(df4$predicted_penalty,df4$stay_at_home)
+
 df4 %>% 
-  ggplot(aes(x=Prob,y=predicted)) +
+  ggplot(aes(x=stay_at_home,y=predicted_penalty)) +
   geom_point() +
   geom_text(aes(label=country),nudge_x = 0.025,nudge_y = -0.01) +
   theme_classic() + 
